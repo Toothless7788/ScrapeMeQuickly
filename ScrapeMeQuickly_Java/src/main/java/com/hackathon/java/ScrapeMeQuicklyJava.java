@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.hackathon.java.entity.Answer;
-import com.hackathon.java.entity.Proxy;
+import com.hackathon.java.entity.ProxyContainer;
 import com.hackathon.java.entity.Scraper;
 import com.hackathon.java.entity.ScraperAnswer;
 
 public class ScrapeMeQuicklyJava {
-	private List<Proxy> proxies;
+	private List<ProxyContainer> proxies;
 	private String scrapingRunID;
 	private final static String PROXY_USERNAME = "pingproxies";
 	private final static String PROXY_PASSWORD = "scrapemequickly";
@@ -30,12 +30,12 @@ public class ScrapeMeQuicklyJava {
 	public ScrapeMeQuicklyJava() {
 		// Proxy servers
 		// Total number - 100000
-		proxies = new ArrayList<Proxy>();
-		proxies.add(new Proxy("194.87.135.1", 9875, "pingproxies", "scrapemequickly"));
-		proxies.add(new Proxy("194.87.135.2", 9875, "pingproxies", "scrapemequickly"));
-		proxies.add(new Proxy("194.87.135.3", 9875, "pingproxies", "scrapemequickly"));
-		proxies.add(new Proxy("194.87.135.4", 9875, "pingproxies", "scrapemequickly"));
-		proxies.add(new Proxy("194.87.135.5", 9875, "pingproxies", "scrapemequickly"));
+		proxies = new ArrayList<ProxyContainer>();
+		proxies.add(new ProxyContainer("194.87.135.1", 9875, "pingproxies", "scrapemequickly"));
+		proxies.add(new ProxyContainer("194.87.135.2", 9875, "pingproxies", "scrapemequickly"));
+		proxies.add(new ProxyContainer("194.87.135.3", 9875, "pingproxies", "scrapemequickly"));
+		proxies.add(new ProxyContainer("194.87.135.4", 9875, "pingproxies", "scrapemequickly"));
+		proxies.add(new ProxyContainer("194.87.135.5", 9875, "pingproxies", "scrapemequickly"));
 		
 		// Set authorization header (Basic Authentication)
 		Authenticator.setDefault(new Authenticator() {

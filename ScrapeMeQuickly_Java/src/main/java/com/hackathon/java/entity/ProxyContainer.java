@@ -1,12 +1,12 @@
 package com.hackathon.java.entity;
 
-public class Proxy {
+public class ProxyContainer {
 	private String host;
 	private int port;
 	private String username;
 	private String password;
 	
-	public Proxy(String host, int port, String username, String password) {
+	public ProxyContainer(String host, int port, String username, String password) {
 		this.setHost(host);
 		this.setPort(port);
 		this.setUsername(username);
