@@ -36,8 +36,8 @@ def create_team(team_name: str, team_email: str) -> str:
 
 def start_scraping_run(team_id: str) -> str:
     print(f"Sending request: https://api.scrapemequickly.com/scraping-run?team_id={team_id}")
-    
-    r = requests.post(f"https://api.scrapemequickly.com/scraping-run?team_id={team_id}")
+
+    r = requests.post(f"https://api.scrapemequickly.com/scraping-run?team_id={team_id}", proxies=proxies)
 
     if r.status_code != 200:
         print(r.json())
@@ -60,6 +60,16 @@ def submit(answers: dict, scraping_run_id: str) -> bool:
 
     return True
 
+def ping(scraping_run_id):
+    r = requests.get(
+        f"https://api.scrapemequickly.com/cars/test?scraping_run_id={scraping_run_id}&per_page=50",
+        headers={"Content-Type": "application/json"}, 
+        proxies=proxies
+    )
+    # https://api.scrapemequickly.com/cars/test?scraping_run_id=89d5dca4-0a34-11f0-b686-4a33b21d14f6&per_page=25
+
+    print(f"response: {r}")
+
 if __name__ == "__main__":
     
     answers = {}
@@ -68,10 +78,13 @@ if __name__ == "__main__":
     team_id = "a672a20f-1206-11f0-8f44-0242ac120003"
 
     scraping_run_id = start_scraping_run(team_id=team_id)
+    print(f"scraping_run_id: {scraping_run_id}")
+
+    ping(scraping_run_id=scraping_run_id)
 
     # TODO: Update answers
 
-    _ = submit(answers=answers, scraping_run_id=scraping_run_id)
+    # _ = submit(answers=answers, scraping_run_id=scraping_run_id)
 
     print(f"team_id: {team_id}; scrappimg_run_id: {scraping_run_id}")
     print(f"Programme ended ...")

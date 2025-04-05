@@ -22,6 +22,7 @@ import com.hackathon.java.entity.Answer;
 import com.hackathon.java.entity.ProxyContainer;
 import com.hackathon.java.entity.Scraper;
 import com.hackathon.java.entity.ScraperAnswer;
+import com.hackathon.java.entity.ServerResponseContainer;
 
 public class ScrapeMeQuicklyJava {
 	private List<ProxyContainer> proxies;
@@ -67,12 +68,14 @@ public class ScrapeMeQuicklyJava {
 		
 		InputStream inputStream = connection.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-		System.out.println("lines: " + reader.lines().collect(Collectors.joining("\n")));
+		Gson gson = new Gson();
+		ServerResponseContainer response = gson.fromJson(reader.lines().collect(Collectors.joining("\n")), ServerResponseContainer.class);
 		
 		// Clean up
 		reader.close();
 		
-		return "None";
+		System.out.println("run_script_id: " + response.getData().getScrapingRunID());
+		return response.getData().getScrapingRunID();
 	}
 	
 	public Answer solve() throws InterruptedException {
