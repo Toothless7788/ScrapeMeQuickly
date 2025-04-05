@@ -28,8 +28,8 @@ public class DemoProxy {
 		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
 
         // Set authorization header (Basic Authentication)
-//        String auth = proxyUsername + ":" + proxyPassword;
-//        String encodedAuth = new String(java.util.Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8)));
+        String auth = proxyUsername + ":" + proxyPassword;
+        String encodedAuth = new String(java.util.Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8)));
 		Authenticator.setDefault(new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(proxyUsername, proxyPassword.toCharArray());
@@ -41,7 +41,7 @@ public class DemoProxy {
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty( "Content-Type", "application/json"); 
 		connection.setRequestProperty( "charset", "utf-8");
-//		connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
+		connection.setRequestProperty("Authorization", "Basic " + encodedAuth);
 		connection.setUseCaches(false);
 		
 		int responseCode = connection.getResponseCode();
