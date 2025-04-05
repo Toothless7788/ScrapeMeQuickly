@@ -3,6 +3,19 @@ import sys
 import json
 
 
+PROXY_URLS = [
+    "http://pingproxies:scrapemequickly@194.87.135.1:9875", 
+    "http://pingproxies:scrapemequickly@194.87.135.2:9875", 
+    "http://pingproxies:scrapemequickly@194.87.135.3:9875", 
+    "http://pingproxies:scrapemequickly@194.87.135.4:9875", 
+    "http://pingproxies:scrapemequickly@194.87.135.5:9875"
+]
+
+proxies = {
+    "http": PROXY_URLS[0], 
+    "https": PROXY_URLS[0]
+}
+
 
 def create_team(team_name: str, team_email: str) -> str:
     r = requests.post(
