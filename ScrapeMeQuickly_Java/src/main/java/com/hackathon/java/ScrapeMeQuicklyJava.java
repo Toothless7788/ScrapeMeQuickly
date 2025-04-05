@@ -1,10 +1,21 @@
 package com.hackathon.java;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.Authenticator;
+import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
 import com.hackathon.java.entity.Answer;
 import com.hackathon.java.entity.Proxy;
 import com.hackathon.java.entity.Scraper;
@@ -13,6 +24,8 @@ import com.hackathon.java.entity.ScraperAnswer;
 public class ScrapeMeQuicklyJava {
 	private List<Proxy> proxies;
 	private String scrapingRunID;
+	private final static String PROXY_USERNAME = "pingproxies";
+	private final static String PROXY_PASSWORD = "scrapemequickly";
 	
 	public ScrapeMeQuicklyJava() {
 		// Proxy servers
@@ -23,10 +36,35 @@ public class ScrapeMeQuicklyJava {
 		proxies.add(new Proxy("194.87.135.3", 9875, "pingproxies", "scrapemequickly"));
 		proxies.add(new Proxy("194.87.135.4", 9875, "pingproxies", "scrapemequickly"));
 		proxies.add(new Proxy("194.87.135.5", 9875, "pingproxies", "scrapemequickly"));
+		
+		// Set authorization header (Basic Authentication)
+		Authenticator.setDefault(new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(PROXY_USERNAME, PROXY_PASSWORD.toCharArray());
+            }
+        });
 	}
 	
-	public void startScrapingRun(String teamID) {
+	@SuppressWarnings("deprecation")
+	public String startScrapingRun(String teamID) throws IOException {
+		URL url = new URL("https://api.scrapemequickly.com/scraping-run?team_id=" + teamID);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("GET");
+		connection.setRequestProperty( "Content-Type", "application/json"); 
+		connection.setRequestProperty( "charset", "utf-8");
+		connection.setUseCaches(false);
 		
+		int responseCode = connection.getResponseCode();
+		System.out.println("startScrapingRun responseCode: " + responseCode);
+		
+		InputStream inputStream = connection.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		System.out.println("lines: " + reader.lines().collect(Collectors.joining("\n")));
+		
+		// Clean up
+		reader.close();
+		
+		return "None";
 	}
 	
 	public Answer solve() throws InterruptedException {
@@ -94,13 +132,51 @@ public class ScrapeMeQuicklyJava {
 		return new Answer(maxYear, minYear, priceSum, 100000, makeMode);
 	}
 	
-	public void submit(Answer answer) {
+	@SuppressWarnings("deprecation")
+	public void submit(Answer answer, String runID) throws IOException {
+		URL url = new URL("https://api.scrapemequickly.com/cars/solve?scraping_run_id=" + runID);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty( "Content-Type", "application/json"); 
+		connection.setRequestProperty( "charset", "utf-8");
+		connection.setUseCaches(false);
+		connection.setDoOutput(true);
 		
+		Gson gson = new Gson();
+		
+		// Convert the 'answers' Map to a JSON string
+        String jsonInputString = gson.toJson(answer);
+        System.out.println("answer: " + jsonInputString);
+
+        // Write JSON string to the output stream of the connection
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+		
+		int responseCode = connection.getResponseCode();
+		System.out.println("startScrapingRun responseCode: " + responseCode);
+		
+		InputStream inputStream = connection.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+		System.out.println("lines: " + reader.lines().collect(Collectors.joining("\n")));
+		
+		// Clean up
+		reader.close();
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException, IOException {
+		System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "false");
+		System.setProperty("jdk.http.auth.proxying.disabledSchemes", "false");
+		final String TEAM_ID = "a672a20f-1206-11f0-8f44-0242ac12000";
 		
+		ScrapeMeQuicklyJava driver = new ScrapeMeQuicklyJava();
 		
+		String runID = driver.startScrapingRun(TEAM_ID);
+		Answer finalAnswer = new Answer(110, 1, 10, 5, "modeMake");
+//		Answer finalAnswer = driver.solve();
+		driver.submit(finalAnswer, runID);
 		
+		System.out.println("Programme terminated successfully ...");
 	}
 }
