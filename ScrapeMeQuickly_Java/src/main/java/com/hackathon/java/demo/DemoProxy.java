@@ -15,8 +15,8 @@ import java.nio.charset.StandardCharsets;
 public class DemoProxy {
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws IOException {
-//		System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "false");
-//		System.setProperty("jdk.http.auth.proxying.disabledSchemes", "false");
+		System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "false");
+		System.setProperty("jdk.http.auth.proxying.disabledSchemes", "false");
 		
 		// Global variables
 		// Proxy
