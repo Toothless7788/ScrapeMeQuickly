@@ -47,7 +47,8 @@ if __name__ == "__main__":
     TEAM_EMAIL = "hin.yip-2@student.manchester.ac.uk"
     answers = {}
 
-    team_id = create_team(team_name=TEAM_NAME, team_email=TEAM_EMAIL)
+    # team_id = create_team(team_name=TEAM_NAME, team_email=TEAM_EMAIL)
+    team_id = "a672a20f-1206-11f0-8f44-0242ac120003"
 
     scraping_run_id = start_scraping_run(team_id=team_id)
 
