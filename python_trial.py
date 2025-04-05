@@ -54,3 +54,6 @@ if __name__ == "__main__":
     # TODO: Update answers
 
     _ = submit(answers=answers, scraping_run_id=scraping_run_id)
+
+    print(f"team_id: {team_id}; scrappimg_run_id: {scraping_run_id}")
+    print(f"Programme ended ...")
