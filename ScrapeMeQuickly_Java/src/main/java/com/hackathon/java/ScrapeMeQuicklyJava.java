@@ -7,7 +7,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,7 @@ public class ScrapeMeQuicklyJava {
 	private String scrapingRunID;
 	private final static String PROXY_USERNAME = "pingproxies";
 	private final static String PROXY_PASSWORD = "scrapemequickly";
+	private Proxy proxy;
 	
 	public ScrapeMeQuicklyJava() {
 		// Proxy servers
@@ -37,19 +40,24 @@ public class ScrapeMeQuicklyJava {
 		proxies.add(new ProxyContainer("194.87.135.4", 9875, "pingproxies", "scrapemequickly"));
 		proxies.add(new ProxyContainer("194.87.135.5", 9875, "pingproxies", "scrapemequickly"));
 		
+		// Initialise proxy
+		proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("194.87.135.1", 9875));
+		
 		// Set authorization header (Basic Authentication)
 		Authenticator.setDefault(new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(PROXY_USERNAME, PROXY_PASSWORD.toCharArray());
-            }
-        });
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(PROXY_USERNAME, PROXY_PASSWORD.toCharArray());
+			}
+		});
 	}
 	
 	@SuppressWarnings("deprecation")
 	public String startScrapingRun(String teamID) throws IOException {
+		System.out.println("Sending request: " + "https://api.scrapemequickly.com/scraping-run?team_id=" + teamID);
+		
 		URL url = new URL("https://api.scrapemequickly.com/scraping-run?team_id=" + teamID);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setRequestMethod("GET");
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+		connection.setRequestMethod("POST");
 		connection.setRequestProperty( "Content-Type", "application/json"); 
 		connection.setRequestProperty( "charset", "utf-8");
 		connection.setUseCaches(false);
@@ -134,8 +142,10 @@ public class ScrapeMeQuicklyJava {
 	
 	@SuppressWarnings("deprecation")
 	public void submit(Answer answer, String runID) throws IOException {
+		System.out.println("Sending request: " + "https://api.scrapemequickly.com/cars/solve?scraping_run_id=" + runID);
+		
 		URL url = new URL("https://api.scrapemequickly.com/cars/solve?scraping_run_id=" + runID);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty( "Content-Type", "application/json"); 
 		connection.setRequestProperty( "charset", "utf-8");
@@ -168,7 +178,7 @@ public class ScrapeMeQuicklyJava {
 	public static void main(String[] args) throws InterruptedException, IOException {
 		System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "false");
 		System.setProperty("jdk.http.auth.proxying.disabledSchemes", "false");
-		final String TEAM_ID = "a672a20f-1206-11f0-8f44-0242ac12000";
+		final String TEAM_ID = "a672a20f-1206-11f0-8f44-0242ac120003";
 		
 		ScrapeMeQuicklyJava driver = new ScrapeMeQuicklyJava();
 		
