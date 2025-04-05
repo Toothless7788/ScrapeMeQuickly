@@ -6,9 +6,7 @@ import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Scraper implements Runnable {
@@ -17,10 +15,14 @@ public class Scraper implements Runnable {
 	private int minCarInedx;
 	private int maxCarIndex;
 	private Proxy proxy;
+	private String domain;
+	private String scrapingRunID;
 	
-	public Scraper(int minCarIndex, int maxCarIndex, String domain, String proxyHost, int proxyPort, String proxyUsername, String proxyPassword) {
+	public Scraper(int minCarIndex, int maxCarIndex, String domain, String proxyHost, int proxyPort, String proxyUsername, String proxyPassword, String scrapingRunID) {
 		this.minCarInedx = minCarIndex;
 		this.maxCarIndex = maxCarIndex;
+		this.domain = domain;
+		this.scrapingRunID = scrapingRunID;
 		// Proxy
 		this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
 		
@@ -35,7 +37,12 @@ public class Scraper implements Runnable {
 
 	@Override
 	public void run() {
-		//TODO Do the scraping thing here
+		URL url = new URL(domain);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+		connection.setRequestMethod("GET");
+		connection.setRequestProperty( "Content-Type", "application/json"); 
+		connection.setRequestProperty( "charset", "utf-8");
+		connection.setUseCaches(false);
 	}
 	
 }
