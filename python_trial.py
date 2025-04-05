@@ -32,7 +32,7 @@ def create_team(team_name: str, team_email: str) -> str:
     return r.json()["data"]["team_id"]
 
 def start_scraping_run(team_id: str) -> str:
-    r = requests.post(f"https://api.scrapemequickly.com/scraping-run?team_id={team_id}")
+    r = requests.post(f"https://api.scrapemequickly.com/scraping-run?team_id={team_id}", proxies=proxies)
 
     if r.status_code != 200:
         print(r.json())

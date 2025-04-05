@@ -24,3 +24,8 @@
 
 ## Useful website for blocklist
 1. blocklist.gov
+
+## Clues
+- Look at the target tag in HTML page
+- Integrate proxies to bypass rate limits
+- 
